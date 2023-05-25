@@ -118,8 +118,11 @@ function App() {
   }, [])
 
   return (
-    <div ref={gridRef}>
-      {grid}
+    <div className='container'>
+      <div ref={gridRef}>
+        {grid}
+      </div>
+      <button className='button' onClick={() => window.location.reload()}>Reset</button>
     </div>
   )
 }
