@@ -44,13 +44,8 @@ const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 function App() {
   const gridRef = useRef<null | HTMLDivElement>(null)
   const grid = ROWS.map((row, i) => (
-    <div key={`row-${i}`} className="row">
-      {row.map((cell, j) => (
-          <div key={`cell-${j}`} className="cell">
-            {`[${cell.join(", ")}]`}
-          </div>
-        )
-      )}
+    <div key={`r${i}`} className="row">
+      {row.map((cell, j) => <div key={`c${j}`} className="cell">{`[${cell.join(", ")}]`}</div>)}
     </div>
     )
   )
@@ -73,33 +68,28 @@ function App() {
 
         await sleep(50);
         const currentCellNode = gridRef.current.childNodes[r].childNodes[c] as HTMLDivElement;
-        visited.add(currentCellKey)
         currentCellNode.classList.add('visited');
+        visited.add(currentCellKey)
+
         const shuffledDirections = [...directions].sort(() => Math.random() - Math.random())
-        shuffledDirections.forEach((d) => {
-          const [nextCellR, nextCellC] = getNextCell(currentCell, d)
+        shuffledDirections.forEach((direction) => {
+          const [nextR, nextC] = getNextCell(currentCell, direction)
           if (
-            !visited.has(`${nextCellR},${nextCellC}`)
-            && nextCellR >= 0
-            && nextCellR < GRID_DIMENSIONS
-            && nextCellC >= 0
-            && nextCellC < GRID_DIMENSIONS
+            !visited.has(`${nextR},${nextC}`)
+            && (nextR >= 0 && nextR < GRID_DIMENSIONS)
+            && (nextC >= 0 && nextC < GRID_DIMENSIONS)
           ) {
-            stack.push([nextCellR, nextCellC]);
-            const pushedCellDirection = getNextDirection(currentCell, [nextCellR, nextCellC]);
-            const pushedCellClasses = borderClasses.get(currentCellKey) ?? new Set();
-            if (pushedCellDirection) pushedCellClasses.add(pushedCellDirection)
-            borderClasses.set(currentCellKey, pushedCellClasses)
+            stack.push([nextR, nextC]);
+            const pushedCellDirection = getNextDirection(currentCell, [nextR, nextC]);
+            const currentCellClasses = borderClasses.get(currentCellKey) ?? new Set();
+            if (pushedCellDirection) currentCellClasses.add(pushedCellDirection)
+            borderClasses.set(currentCellKey, currentCellClasses)
           }
         })
         const nextCell = stack.at(-1) as [number, number];
         const nextDirection = getNextDirection(currentCell, nextCell);
-        if (!nextDirection) continue; // If undefined, we've hit a dead end
+        if (!nextDirection) continue; // dead end
         const oppositeDirection = oppositeDirections[nextDirection];
-        const currentCellClasses = borderClasses.get(currentCellKey) ?? new Set();
-        currentCellClasses.add(nextDirection);
-        borderClasses.set(currentCellKey, currentCellClasses);
-
         const nextCellKey = nextCell.join(',');
         const nextCellClasses = borderClasses.get(nextCellKey) ?? new Set();
         nextCellClasses.add(oppositeDirection);
@@ -116,6 +106,7 @@ function App() {
     )})()
 
     return () => {
+      // Reset grid on unmount
       mounted = false;
       if (!gridRefCopy.current) return;
       gridRefCopy.current.childNodes.forEach(({childNodes}) => {
