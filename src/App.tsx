@@ -67,9 +67,10 @@ function App() {
       const currentCell = stack.pop();
       if (!currentCell) break;
       const [r, c] = currentCell
-      if (visited.has(`${r},${c}`)) continue;
+      const currentCellKey = `${r},${c}`
+      if (visited.has(currentCellKey)) continue;
       const currentCellNode = gridRef.current.childNodes[r].childNodes[c] as HTMLDivElement;
-      visited.add(`${r},${c}`)
+      visited.add(currentCellKey)
       currentCellNode.classList.add('visited');
       const shuffledDirections = [...directions].sort(() => Math.random() - Math.random())
       shuffledDirections.forEach((d) => {
@@ -82,14 +83,16 @@ function App() {
           && nextCellC < GRID_DIMENSIONS
         ) {
           stack.push([nextCellR, nextCellC]);
-          // TODO: if a new cell has been pushed, also update the borderClasses
+          const pushedCellDirection = getNextDirection(currentCell, [nextCellR, nextCellC]);
+          const pushedCellClasses = borderClasses.get(currentCellKey) ?? new Set();
+          if (pushedCellDirection) pushedCellClasses.add(pushedCellDirection)
+          borderClasses.set(currentCellKey, pushedCellClasses)
         }
       })
       const nextCell = stack.at(-1) as [number, number];
       const nextDirection = getNextDirection(currentCell, nextCell);
       if (!nextDirection) continue; // If undefined, we've hit a dead end
       const oppositeDirection = oppositeDirections[nextDirection];
-      const currentCellKey = currentCell.join(',');
       const currentCellClasses = borderClasses.get(currentCellKey) ?? new Set();
       currentCellClasses.add(nextDirection);
       borderClasses.set(currentCellKey, currentCellClasses);
