@@ -1,0 +1,44 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  background-color: rgb(15, 15, 20);
+}
+
+.row {
+  height: 100px;
+  display: flex;
+  justify-content: center;
+}
+
+.cell {
+  height: 100px;
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  background-color:royalblue;
+  border-collapse: collapse;
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}
+
+.visited {
+  background-color: brown;
+}
+
+.top {
+  border-top: none;
+}
+.left {
+  border-left: none;
+}
+.right {
+  border-right: none;
+}
+.bottom {
+  border-bottom: none;
+}
