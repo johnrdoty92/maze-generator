@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import './App.css'
 
-const GRID_DIMENSIONS = 5;
+const GRID_DIMENSIONS = 10;
 const ROWS = (Array(GRID_DIMENSIONS)
   .fill(0)
   .map((_, i) => (
@@ -110,7 +110,7 @@ function App() {
 
   return (
     <div className='container'>
-      <div ref={gridRef}>
+      <div className='grid' ref={gridRef}>
         {grid}
       </div>
       <button className='button' onClick={() => window.location.reload()}>Reset</button>
