@@ -1,3 +1,7 @@
+:root {
+  --square-size: 100px;
+}
+
 .container {
     display: flex;
     place-items: center;
@@ -11,16 +15,17 @@
     width: fit-content;
     padding: 0.5em 1em;
     border: none;
-    background-color: royalblue;
+    background-color: rgb(65, 105, 225);
     color: white;
-    transform: scale(1);
+    transform: translateY(0);
     transition: background-color 150ms ease, transform 150ms ease, color 150ms ease;
+    border-radius: 5px;
 }
 
 .button:hover, .button:focus {
-    background-color: rgb(50,50,100);
+    background-color: rgb(80, 120, 240);
     cursor: pointer;
-    transform: scale(1.1);
+    transform: translateY(-3px);
 }
 
 .button:active {
@@ -28,13 +33,12 @@
 }
 
 .row {
-    height: 100px;
     display: flex;
     justify-content: center;
   }
   
   .cell {
-    height: 100px;
+    height: var(--square-size);
     aspect-ratio: 1 / 1;
     display: grid;
     place-items: center;
