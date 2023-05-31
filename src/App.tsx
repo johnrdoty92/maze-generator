@@ -38,12 +38,12 @@ function App() {
   const [gridDimensions, setGridDimensions] = useState(10);
   const ROWS = (Array(gridDimensions)
     .fill(0)
-    .map((_, i) => Array(gridDimensions).fill(0).map((_, j) => ([i, j])))
+    .map((_, i) => Array(gridDimensions).fill(0).map<[number, number]>((_, j) => ([i, j])))
   );
   const gridRef = useRef<null | HTMLDivElement>(null)
   const grid = ROWS.map((row, i) => (
     <div key={`r${i}`} className="row">
-      {row.map((cell, j) => <div key={`c${j}`} className="cell">{`[${cell.join(", ")}]`}</div>)}
+      {row.map((cell) => <div key={getCellKey(cell)} className="cell"/>)}
     </div>
     )
   )

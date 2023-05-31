@@ -35,7 +35,6 @@
 .grid {
   width: min(75dvh, 75%);
   aspect-ratio: 1 / 1;
-  outline: 1px solid rosybrown;
   display: flex;
   flex-direction: column;
 }
