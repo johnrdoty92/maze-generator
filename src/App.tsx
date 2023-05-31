@@ -33,7 +33,7 @@ const getNextCell = ([cell1r, cell1c]: [number, number], direction: Directions):
 
 const getNextDirection = (currentCell: [number, number], nextCell: [number, number]): Directions | undefined => {
   const newCoordinates = [nextCell[0] - currentCell[0], nextCell[1] - currentCell[1]]
-  const directionEntry = Object.entries(moveMap).find(([_, coords]) => coords.join(',') === newCoordinates.join(','))
+  const directionEntry = Object.entries(moveMap).find((moves) => moves[1].join(',') === newCoordinates.join(','))
   if (!directionEntry || !directions.find((dir) => directionEntry[0] === dir)) return;
   return directionEntry[0] as Directions
 }
