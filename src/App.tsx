@@ -1,11 +1,5 @@
-import { useEffect, useRef } from 'react';
+import { ChangeEventHandler, useEffect, useRef, useState } from 'react';
 import './App.css'
-
-const GRID_DIMENSIONS = 10;
-const ROWS = (Array(GRID_DIMENSIONS)
-  .fill(0)
-  .map((_, i) => Array(GRID_DIMENSIONS).fill(0).map((_, j) => ([i, j])))
-);
 
 const directions = ['top', 'left', 'right', 'bottom'] as const;
 type Directions = typeof directions[number];
@@ -41,6 +35,11 @@ const getNextDirection = (currentCell: [number, number], nextCell: [number, numb
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 function App() {
+  const [gridDimensions, setGridDimensions] = useState(10);
+  const ROWS = (Array(gridDimensions)
+    .fill(0)
+    .map((_, i) => Array(gridDimensions).fill(0).map((_, j) => ([i, j])))
+  );
   const gridRef = useRef<null | HTMLDivElement>(null)
   const grid = ROWS.map((row, i) => (
     <div key={`r${i}`} className="row">
@@ -48,6 +47,10 @@ function App() {
     </div>
     )
   )
+
+  const handleDimensions: ChangeEventHandler<HTMLInputElement> = ({target}) => {
+    setGridDimensions(target.valueAsNumber)
+  }
 
   useEffect(() => {
     let mounted = true;
@@ -77,8 +80,8 @@ function App() {
           if (
             !visited.has(nextCellKey)
             && !(stack.find(cell => getCellKey(cell) === nextCellKey))
-            && (nextR >= 0 && nextR < GRID_DIMENSIONS)
-            && (nextC >= 0 && nextC < GRID_DIMENSIONS)
+            && (nextR >= 0 && nextR < gridDimensions)
+            && (nextC >= 0 && nextC < gridDimensions)
           ) {
             stack.push(nextCell);
           }
@@ -112,11 +115,11 @@ function App() {
       if (!gridRefCopy.current) return;
       gridRefCopy.current.childNodes.forEach(({childNodes}) => {
         childNodes.forEach(cell => {
-          (cell as HTMLDivElement).classList.remove(...directions)
+          (cell as HTMLDivElement).classList.remove(...directions, 'visited')
         })
       })
     }
-  }, [])
+  }, [gridDimensions])
 
   return (
     <div className='container'>
@@ -124,6 +127,7 @@ function App() {
         {grid}
       </div>
       <button className='button' onClick={() => window.location.reload()}>Reset</button>
+      <input type='range' onChange={handleDimensions} value={gridDimensions} min={5} max={20}/>
     </div>
   )
 }

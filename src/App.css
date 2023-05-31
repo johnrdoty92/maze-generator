@@ -1,3 +1,7 @@
+:root {
+  --border-width: 1px;
+}
+
 .container {
     display: flex;
     place-items: center;
@@ -29,7 +33,7 @@
 }
 
 .grid {
-  width: min(90dvh, 75%);
+  width: min(75dvh, 75%);
   aspect-ratio: 1 / 1;
   outline: 1px solid rosybrown;
   display: flex;
@@ -43,7 +47,6 @@
   }
   
 .cell {
-  /* margin: -1px 0px 0px -1px; */
   flex: 1;
   aspect-ratio: 1 / 1;
   display: grid;
@@ -51,10 +54,10 @@
   font-size: clamp(8px, 1em, 14px);
   background-color:royalblue;
   border-collapse: collapse;
-  border-top: 1px solid black;
-  border-left: 1px solid black;
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
+  border-top: var(--border-width) solid black;
+  border-left: var(--border-width) solid black;
+  border-right: var(--border-width) solid black;
+  border-bottom: var(--border-width) solid black;
 }
 
 .visited {
@@ -62,17 +65,17 @@
 }
 
 .top {
-  border-top: 1px solid transparent;
+  border-top: var(--border-width) solid transparent;
 }
 
 .left {
-  border-left: 1px solid transparent;
+  border-left: var(--border-width) solid transparent;
 }
 
 .right {
-  border-right: 1px solid transparent;
+  border-right: var(--border-width) solid transparent;
 }
 
 .bottom {
-  border-bottom: 1px solid transparent;
+  border-bottom: var(--border-width) solid transparent;
 }
