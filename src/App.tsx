@@ -27,6 +27,8 @@ const oppositeDirections: Record<Directions, Directions> = {
   bottom: "top",
 }
 
+const getCellKey = (cell: [number, number]) => cell.join(',');
+
 const getNextCell = ([cell1r, cell1c]: [number, number], direction: Directions): [number, number] => {
   const [r, c] = moveMap[direction]
   return [cell1r + r, cell1c + c]
@@ -62,25 +64,27 @@ function App() {
       while (stack.length !== 0 && mounted) {
         const currentCell = stack.pop();
         if (!currentCell) break;
-        const [r, c] = currentCell
-        const currentCellKey = `${r},${c}`
+        const currentCellKey = getCellKey(currentCell)
         if (visited.has(currentCellKey)) continue;
+        const [r, c] = currentCell
 
-        await sleep(50);
+        await sleep(100);
         const currentCellNode = gridRef.current.childNodes[r].childNodes[c] as HTMLDivElement;
         currentCellNode.classList.add('visited');
         visited.add(currentCellKey)
 
         const shuffledDirections = [...directions].sort(() => Math.random() - Math.random())
         shuffledDirections.forEach((direction) => {
-          const [nextR, nextC] = getNextCell(currentCell, direction)
+          const nextCell = getNextCell(currentCell, direction);
+          const nextCellKey = getCellKey(nextCell);
+          const [nextR, nextC] = nextCell;
           if (
-            !visited.has(`${nextR},${nextC}`)
+            !visited.has(nextCellKey)
             && (nextR >= 0 && nextR < GRID_DIMENSIONS)
             && (nextC >= 0 && nextC < GRID_DIMENSIONS)
           ) {
-            stack.push([nextR, nextC]);
-            const pushedCellDirection = getNextDirection(currentCell, [nextR, nextC]);
+            stack.push(nextCell);
+            const pushedCellDirection = getNextDirection(currentCell, nextCell);
             const currentCellClasses = borderClasses.get(currentCellKey) ?? new Set();
             if (pushedCellDirection) currentCellClasses.add(pushedCellDirection)
             borderClasses.set(currentCellKey, currentCellClasses)
@@ -102,8 +106,8 @@ function App() {
         const [r, c] = coordsAsString.split(',').map(coord => parseInt(coord))
         const cellNode = gridRef.current.childNodes[r].childNodes[c] as HTMLDivElement;
         directionsSet.forEach(direction => cellNode.classList.add(direction))
-      }
-    )})()
+      })
+    })()
 
     return () => {
       // Reset grid on unmount
