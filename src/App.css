@@ -1,5 +1,8 @@
 :root {
   --border-width: 1px;
+  --border-color: rgb(25, 58, 157);
+  --cell-bg: linear-gradient(rgba(0, 217, 255, 0.5), rgba(0, 166, 255, 0.5));
+  --grid-bg: linear-gradient(rgb(17, 226, 226),rgb(202, 17, 223));
 }
 
 .container {
@@ -53,6 +56,7 @@
   aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
+  background: var(--grid-bg);
 }
 
 .row {
@@ -67,16 +71,17 @@
   display: grid;
   place-items: center;
   font-size: clamp(8px, 1em, 14px);
-  background-color:royalblue;
+  background: var(--cell-bg);
   border-collapse: collapse;
-  border-top: var(--border-width) solid black;
-  border-left: var(--border-width) solid black;
-  border-right: var(--border-width) solid black;
-  border-bottom: var(--border-width) solid black;
+  border-top: var(--border-width) solid var(--border-color);
+  border-left: var(--border-width) solid var(--border-color);
+  border-right: var(--border-width) solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .visited {
-  background-color: brown;
+  background: none;
+  backdrop-filter: saturate(1.5);
 }
 
 .top {

@@ -40,15 +40,15 @@ const getNextDirection = (currentCell: [number, number], nextCell: [number, numb
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms))
 
 const interpolateDelay = (speed: number) => {
-  const SLOWEST_SPEED_IN_MS = 750;
-  const FASTEST_SPEED_IN_MS = 10;
+  const SLOWEST_SPEED_IN_MS = 500;
+  const FASTEST_SPEED_IN_MS = 5;
   const increments = (FASTEST_SPEED_IN_MS - SLOWEST_SPEED_IN_MS) / SPEED.max;
   return SLOWEST_SPEED_IN_MS + (increments * speed)
 }
 
 function App() {
   const [gridDimensions, setGridDimensions] = useState(10);
-  const [speed, setSpeed] = useState(50);
+  const [speed, setSpeed] = useState(75);
   const ROWS = (Array(gridDimensions)
     .fill(0)
     .map((_, i) => Array(gridDimensions).fill(0).map<[number, number]>((_, j) => ([i, j])))
