@@ -59,7 +59,6 @@ function App() {
       if (!gridRef.current) return;
       const stack: [number, number][] = [[0,0]];
       const visited = new Set<string>();
-      const borderClasses: Map<string, Set<Directions>> = new Map()
 
       while (stack.length !== 0 && mounted) {
         const currentCell = stack.pop();
@@ -80,33 +79,21 @@ function App() {
           const [nextR, nextC] = nextCell;
           if (
             !visited.has(nextCellKey)
+            && !(stack.find(cell => getCellKey(cell) === nextCellKey))
             && (nextR >= 0 && nextR < GRID_DIMENSIONS)
             && (nextC >= 0 && nextC < GRID_DIMENSIONS)
           ) {
             stack.push(nextCell);
-            const pushedCellDirection = getNextDirection(currentCell, nextCell);
-            const currentCellClasses = borderClasses.get(currentCellKey) ?? new Set();
-            if (pushedCellDirection) currentCellClasses.add(pushedCellDirection)
-            borderClasses.set(currentCellKey, currentCellClasses)
+            const nextCellDirection = getNextDirection(currentCell, nextCell);
+            if (!nextCellDirection || !gridRef.current) return;
+            const oppositeDirection = oppositeDirections[nextCellDirection];
+            const currentCellNode = gridRef.current.childNodes[currentCell[0]].childNodes[currentCell[1]] as HTMLDivElement;
+            const nextCellNode = gridRef.current.childNodes[nextCell[0]].childNodes[nextCell[1]] as HTMLDivElement;
+            currentCellNode.classList.add(nextCellDirection);
+            nextCellNode.classList.add(oppositeDirection);
           }
         })
-        const nextCell = stack.at(-1) as [number, number];
-        const nextDirection = getNextDirection(currentCell, nextCell);
-        if (!nextDirection) continue; // dead end
-        const oppositeDirection = oppositeDirections[nextDirection];
-        const nextCellKey = nextCell.join(',');
-        const nextCellClasses = borderClasses.get(nextCellKey) ?? new Set();
-        nextCellClasses.add(oppositeDirection);
-        borderClasses.set(nextCellKey, nextCellClasses);
       }
-      
-      if (!mounted) return;
-      borderClasses.forEach((directionsSet, coordsAsString) => {
-        if (!gridRef.current) return;
-        const [r, c] = coordsAsString.split(',').map(coord => parseInt(coord))
-        const cellNode = gridRef.current.childNodes[r].childNodes[c] as HTMLDivElement;
-        directionsSet.forEach(direction => cellNode.classList.add(direction))
-      })
     })()
 
     return () => {
