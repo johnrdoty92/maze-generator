@@ -4,10 +4,7 @@ import './App.css'
 const GRID_DIMENSIONS = 10;
 const ROWS = (Array(GRID_DIMENSIONS)
   .fill(0)
-  .map((_, i) => (
-    Array(GRID_DIMENSIONS).fill(0).map((_, j) => ([i, j]))
-    )
-  )
+  .map((_, i) => Array(GRID_DIMENSIONS).fill(0).map((_, j) => ([i, j])))
 );
 
 const directions = ['top', 'left', 'right', 'bottom'] as const;
@@ -67,7 +64,7 @@ function App() {
         if (visited.has(currentCellKey)) continue;
         const [r, c] = currentCell
 
-        await sleep(100);
+        await sleep(10);
         const currentCellNode = gridRef.current.childNodes[r].childNodes[c] as HTMLDivElement;
         currentCellNode.classList.add('visited');
         visited.add(currentCellKey)
@@ -84,15 +81,28 @@ function App() {
             && (nextC >= 0 && nextC < GRID_DIMENSIONS)
           ) {
             stack.push(nextCell);
-            const nextCellDirection = getNextDirection(currentCell, nextCell);
-            if (!nextCellDirection || !gridRef.current) return;
-            const oppositeDirection = oppositeDirections[nextCellDirection];
-            const currentCellNode = gridRef.current.childNodes[currentCell[0]].childNodes[currentCell[1]] as HTMLDivElement;
-            const nextCellNode = gridRef.current.childNodes[nextCell[0]].childNodes[nextCell[1]] as HTMLDivElement;
-            currentCellNode.classList.add(nextCellDirection);
-            nextCellNode.classList.add(oppositeDirection);
           }
         })
+        const nextCell = stack.at(-1);
+        if (!nextCell) continue;
+        const nextCellDirection = getNextDirection(currentCell, nextCell);
+        const nextCellNode = gridRef.current.childNodes[nextCell[0]].childNodes[nextCell[1]] as HTMLDivElement;
+        if (!nextCellDirection) { // dead end
+          for (const direction of directions) {
+            // Find previously visited cell and remove borders
+            const neighborCell = getNextCell(nextCell, direction);
+            const neighborDirection = getNextDirection(nextCell, neighborCell)
+            if (!visited.has(getCellKey(neighborCell)) || !neighborDirection) continue;
+            nextCellNode.classList.add(neighborDirection)
+            const neighborCellNode = gridRef.current.childNodes[neighborCell[0]].childNodes[neighborCell[1]] as HTMLDivElement;
+            neighborCellNode.classList.add(oppositeDirections[neighborDirection])
+            break;
+          }
+        } else {
+          // Continue dfs and remove borders
+          currentCellNode.classList.add(nextCellDirection);
+          nextCellNode.classList.add(oppositeDirections[nextCellDirection])
+        }
       }
     })()
 
